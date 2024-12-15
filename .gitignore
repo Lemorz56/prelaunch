@@ -17,3 +17,5 @@ target/
 *.pdb
 
 *.sqlite
+*.sqlite-wal
+.idea/*

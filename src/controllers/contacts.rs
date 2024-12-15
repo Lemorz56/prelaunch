@@ -70,14 +70,15 @@ pub async fn edit(
     views::contacts::edit(&v, &item)
 }
 
+//TODO: REMOVE
 #[debug_handler]
 pub async fn show(
     Path(id): Path<i32>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let item = load_item(&ctx, id).await?;
-    views::contacts::show(&v, &item)
+    // let item = load_item(&ctx, id).await?;
+    views::contacts::show(&v)
 }
 
 #[debug_handler]
@@ -88,13 +89,15 @@ pub async fn add(
 ) -> Result<Response> {
     if Model::exists(&ctx.db, &params.email).await? {
         tracing::debug!(email = params.email, "email already exists");
+    } else {
+        let mut item = ActiveModel {
+            ..Default::default()
+        };
+        params.update(&mut item);
+        item.insert(&ctx.db).await?;
     }
-    let mut item = ActiveModel {
-        ..Default::default()
-    };
-    params.update(&mut item);
-    let item = item.insert(&ctx.db).await?;
-    views::contacts::show(&v, &item)
+
+    views::contacts::show(&v)
 }
 
 #[debug_handler]

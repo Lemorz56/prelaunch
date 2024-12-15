@@ -55,6 +55,7 @@ impl Hooks for App {
     }
     fn register_tasks(tasks: &mut Tasks) {
         tasks.register(tasks::seed::SeedData);
+        tasks.register(tasks::dump_contacts::DumpContacts);
         // tasks-inject (do not remove)
     }
     async fn truncate(db: &DatabaseConnection) -> Result<()> {
